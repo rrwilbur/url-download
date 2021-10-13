@@ -29,6 +29,14 @@ def download_image(output_directory, image_folder, url, image_name):
         with open(os.path.join(cwd, output_directory, image_folder, image_name), 'wb') as f:
             f.write(r.content)
 
+def count_number_of_images_to_download(row: dict) -> int:
+    number_of_images = 0
+    
+    for column in row.keys():
+        if "image" in column:
+            number_of_images +=1
+        
+    return number_of_images
 
 with open('url-list.csv', mode='r') as csv_file:
     csv_reader = csv.DictReader(csv_file)
@@ -39,10 +47,9 @@ with open('url-list.csv', mode='r') as csv_file:
             line_count += 1
         create_output_directory(row["directory"])
         create_directories(row["directory"], row["image_folder"])
-        download_image(row["directory"], row["image_folder"], row["image_1"], '1.jpg')
-        download_image(row["directory"], row["image_folder"], row["image_2"], '2.jpg')
-        download_image(row["directory"], row["image_folder"], row["image_3"], '3.jpg')
-        download_image(row["directory"], row["image_folder"], row["image_4"], '4.jpg')
+        number_of_images = count_number_of_images_to_download(row)
+        for index, image in enumerate(range(number_of_images)):
+            download_image(row["directory"], row["image_folder"], row[image], f"{index}.jpg") 
        
   
 
