@@ -29,14 +29,16 @@ def download_image(output_directory, image_folder, url, image_name):
         with open(os.path.join(cwd, output_directory, image_folder, image_name), 'wb') as f:
             f.write(r.content)
 
+
 def count_number_of_images_to_download(row: csv.DictReader) -> int:
     number_of_images = 0
-    
+
     for fieldname in row.fieldnames:
-        if "image" in column:
+        if "image" in fieldname:
             number_of_images +=1
-        
-    return number_of_images
+    
+        return number_of_images
+
 
 with open('url-list.csv', mode='r') as csv_file:
     csv_reader = csv.DictReader(csv_file)
@@ -52,10 +54,9 @@ with open('url-list.csv', mode='r') as csv_file:
             try:
                 if row[image]:
                     download_image(row["directory"], row["image_folder"], row[image], f"{index}.jpg")
-                    print(
             except KeyError:
                 continue
 
-        print(f'\t{row}')
-        line_count += 1
+    print(f'\t{row}')
+    line_count += 1
     print (f'Processed {line_count} lines.')
