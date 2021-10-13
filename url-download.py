@@ -29,10 +29,10 @@ def download_image(output_directory, image_folder, url, image_name):
         with open(os.path.join(cwd, output_directory, image_folder, image_name), 'wb') as f:
             f.write(r.content)
 
-def count_number_of_images_to_download(row: dict) -> int:
+def count_number_of_images_to_download(row: csv.DictReader) -> int:
     number_of_images = 0
     
-    for column in row.keys():
+    for fieldname in row.fieldnames:
         if "image" in column:
             number_of_images +=1
         
@@ -49,13 +49,13 @@ with open('url-list.csv', mode='r') as csv_file:
         create_directories(row["directory"], row["image_folder"])
         number_of_images = count_number_of_images_to_download(row)
         for index, image in enumerate(range(number_of_images)):
-            download_image(row["directory"], row["image_folder"], row[image], f"{index}.jpg") 
-       
-  
+            try:
+                if row[image]:
+                    download_image(row["directory"], row["image_folder"], row[image], f"{index}.jpg")
+                    print(
+            except KeyError:
+                continue
 
-
-
-
-        print(f'\t{row["directory"]} {row["image_folder"]} {row["image_1"]} {row["image_2"]} {row["image_3"]} {row["image_4"]}.')
+        print(f'\t{row}')
         line_count += 1
     print (f'Processed {line_count} lines.')
